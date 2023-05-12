@@ -11,18 +11,19 @@ GUETZLI_CMDLINE = './guetzli -quality {2} {0} {1}'
 OTHER_CMDLINE = sys.argv[3]
 
 def run(cmdline):
-  print('running {}'.format(cmdline), file=sys.stderr)
+  print(f'running {cmdline}', file=sys.stderr)
   return subprocess.check_output(cmdline, shell=True)
 
 def size(filename):
   return os.stat(filename).st_size
 
 def ba_distance(orig, compressed):
-  return float(run(BA_CMDLINE.format(orig, compressed, compressed + ".diffmap.pnm")))
+  return float(
+      run(BA_CMDLINE.format(orig, compressed, f"{compressed}.diffmap.pnm")))
 
 def handle_png(png):
-  other_jpeg = png + "." + sys.argv[1] + ".other.jpg"
-  guetzli_jpeg = png + "." + sys.argv[1] + ".guetzli.jpg"
+  other_jpeg = f"{png}.{sys.argv[1]}.other.jpg"
+  guetzli_jpeg = f"{png}.{sys.argv[1]}.guetzli.jpg"
   run(OTHER_CMDLINE.format(png, other_jpeg))
   other_distance = ba_distance(png, other_jpeg)
   left = 84.0
